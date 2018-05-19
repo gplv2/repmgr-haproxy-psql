@@ -18,7 +18,7 @@ Vagrant.configure("2") do |config|
 
     # Configure Local Variable To Access Scripts From Remote Location
     scriptDir = File.dirname(__FILE__)
-    localscriptDir = "/vagrant/scripts"
+    localscriptDir = "/home/vagrant/scripts"
     dbUser = "postgres"
     dbName = "cluster"
 
@@ -54,24 +54,21 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--ostype", "Ubuntu_64"]
     end
 
-    db.vm.provision "fix-no-tty", type: "shell" do |s|
-      s.privileged = false
-      s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
-    end
+#    db.vm.provision "fix-no-tty", type: "shell" do |s|
+#      s.privileged = false
+#      s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
+#    end
 
     # apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
-    db.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
-    db.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
+#    db.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
+#    db.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
+
+    db.vm.provision "file", source: "scripts", destination: "/home/vagrant/"
 
     #db.vm.provision "shell", :inline => "apt-get -o 'Dpkg::Options::=--force-confnew' -f install"
     db.vm.provision "shell", :inline => localscriptDir + "/upgrade.sh"
 
     #db.vm.provision "shell", :inline => "exit 1"
-
-    db.vm.provision "shell" do |s|
-      s.name = "Creating Postgres Database"
-      s.inline = localscriptDir + "/create-postgres.sh " + dbName + " " + dbUser
-    end
 
     db.vm.provision "shell" do |s|
       s.name = "Installing vagrant bootstrap"
@@ -82,6 +79,12 @@ Vagrant.configure("2") do |config|
       s.name = "Restarting postgres"
       s.inline = "sudo service postgresql restart"
     end
+
+    db.vm.provision "shell" do |s|
+      s.name = "Creating Postgres Database"
+      s.inline = localscriptDir + "/create-postgres.sh " + dbName + " " + dbUser
+    end
+
 
     # Provider-specific configuration so you can fine-tune various
     # backing providers for Vagrant. These expose provider-specific options.
@@ -122,7 +125,7 @@ Vagrant.configure("2") do |config|
 
     # Configure Local Variable To Access Scripts From Remote Location
     scriptDir = File.dirname(__FILE__)
-    localscriptDir = "/vagrant/scripts"
+    localscriptDir = "/home/vagrant/scripts"
     dbUser = "postgres"
     dbName = "cluster"
 
@@ -158,14 +161,16 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--ostype", "Ubuntu_64"]
     end
 
-    db.vm.provision "fix-no-tty", type: "shell" do |s|
-      s.privileged = false
-      s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
-    end
+ #   db.vm.provision "fix-no-tty", type: "shell" do |s|
+ #     s.privileged = false
+ #     s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
+ #   end
 
     # apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
-    db.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
-    db.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
+#    db.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
+#    db.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
+
+    db.vm.provision "file", source: "scripts", destination: "/home/vagrant/"
 
     #db.vm.provision "shell", :inline => "apt-get -o 'Dpkg::Options::=--force-confnew' -f install"
     db.vm.provision "shell", :inline => localscriptDir + "/upgrade.sh"
@@ -227,7 +232,7 @@ Vagrant.configure("2") do |config|
 
     # Configure Local Variable To Access Scripts From Remote Location
     scriptDir = File.dirname(__FILE__)
-    localscriptDir = "/vagrant/scripts"
+    localscriptDir = "/home/vagrant/scripts"
     dbUser = "postgres"
     dbName = "cluster"
 
@@ -263,14 +268,16 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--ostype", "Ubuntu_64"]
     end
 
-    haproxy.vm.provision "fix-no-tty", type: "shell" do |s|
-      s.privileged = false
-      s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
-    end
+#    haproxy.vm.provision "fix-no-tty", type: "shell" do |s|
+#      s.privileged = false
+#      s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
+#    end
 
     # apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
-    haproxy.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
-    haproxy.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
+#    haproxy.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
+#    haproxy.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
+
+    haproxy.vm.provision "file", source: "scripts", destination: "/home/vagrant/"
 
     #haproxy.vm.provision "shell", :inline => "apt-get -o 'Dpkg::Options::=--force-confnew' -f install"
     haproxy.vm.provision "shell", :inline => localscriptDir + "/upgrade.sh"
@@ -331,7 +338,7 @@ Vagrant.configure("2") do |config|
 
     # Configure Local Variable To Access Scripts From Remote Location
     scriptDir = File.dirname(__FILE__)
-    localscriptDir = "/vagrant/scripts"
+    localscriptDir = "/home/vagrant/scripts"
     dbUser = "postgres"
     dbName = "cluster"
 
@@ -367,14 +374,16 @@ Vagrant.configure("2") do |config|
       v.customize ["modifyvm", :id, "--ostype", "Ubuntu_64"]
     end
 
-    haproxy.vm.provision "fix-no-tty", type: "shell" do |s|
-      s.privileged = false
-      s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
-    end
+#    haproxy.vm.provision "fix-no-tty", type: "shell" do |s|
+#      s.privileged = false
+#      s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
+#    end
 
     # apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
-    haproxy.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
-    haproxy.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
+#    haproxy.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
+#    haproxy.vm.provision "shell", :inline => 'DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -q -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
+
+    haproxy.vm.provision "file", source: "scripts", destination: "/home/vagrant/"
 
     #haproxy.vm.provision "shell", :inline => "apt-get -o 'Dpkg::Options::=--force-confnew' -f install"
     haproxy.vm.provision "shell", :inline => localscriptDir + "/upgrade.sh"
