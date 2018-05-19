@@ -1,0 +1,1 @@
+# repmgr-haproxy-psql
